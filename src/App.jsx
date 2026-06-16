@@ -38,112 +38,128 @@ const GROUPS = {
   A: {
     name: "Group A",
     teams: [
-      { id: "MEX", name: "Mexico", flag: "🇲🇽", rating: 78 },
-      { id: "RSA", name: "South Africa", flag: "🇿🇦", rating: 72 },
-      { id: "KOR", name: "South Korea", flag: "🇰🇷", rating: 80 },
-      { id: "CZE", name: "Czechia", flag: "🇨🇿", rating: 77 }
+      { id: "MEX", name: "Mexico", flag: "🇲🇽", rating: 78, code: "mx" },
+      { id: "RSA", name: "South Africa", flag: "🇿🇦", rating: 72, code: "za" },
+      { id: "KOR", name: "South Korea", flag: "🇰🇷", rating: 80, code: "kr" },
+      { id: "CZE", name: "Czechia", flag: "🇨🇿", rating: 77, code: "cz" }
     ]
   },
   B: {
     name: "Group B",
     teams: [
-      { id: "CAN", name: "Canada", flag: "🇨🇦", rating: 75 },
-      { id: "BIH", name: "Bosnia & Herz.", flag: "🇧🇦", rating: 74 },
-      { id: "QAT", name: "Qatar", flag: "🇶🇦", rating: 68 },
-      { id: "SUI", name: "Switzerland", flag: "🇨🇭", rating: 81 }
+      { id: "CAN", name: "Canada", flag: "🇨🇦", rating: 75, code: "ca" },
+      { id: "BIH", name: "Bosnia & Herz.", flag: "🇧🇦", rating: 74, code: "ba" },
+      { id: "QAT", name: "Qatar", flag: "🇶🇦", rating: 68, code: "qa" },
+      { id: "SUI", name: "Switzerland", flag: "🇨🇭", rating: 81, code: "ch" }
     ]
   },
   C: {
     name: "Group C",
     teams: [
-      { id: "BRA", name: "Brazil", flag: "🇧🇷", rating: 88 },
-      { id: "MAR", name: "Morocco", flag: "🇲🇦", rating: 83 },
-      { id: "HAI", name: "Haiti", flag: "🇭🇹", rating: 65 },
-      { id: "SCO", name: "Scotland", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", rating: 75 }
+      { id: "BRA", name: "Brazil", flag: "🇧🇷", rating: 88, code: "br" },
+      { id: "MAR", name: "Morocco", flag: "🇲🇦", rating: 83, code: "ma" },
+      { id: "HAI", name: "Haiti", flag: "🇭🇹", rating: 65, code: "ht" },
+      { id: "SCO", name: "Scotland", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", rating: 75, code: "gb-sct" }
     ]
   },
   D: {
     name: "Group D",
     teams: [
-      { id: "USA", name: "United States", flag: "🇺🇸", rating: 81 },
-      { id: "PAR", name: "Paraguay", flag: "🇵🇾", rating: 73 },
-      { id: "AUS", name: "Australia", flag: "🇦🇺", rating: 76 },
-      { id: "TUR", name: "Türkiye", flag: "🇹🇷", rating: 79 }
+      { id: "USA", name: "United States", flag: "🇺🇸", rating: 81, code: "us" },
+      { id: "PAR", name: "Paraguay", flag: "🇵🇾", rating: 73, code: "py" },
+      { id: "AUS", name: "Australia", flag: "🇦🇺", rating: 76, code: "au" },
+      { id: "TUR", name: "Türkiye", flag: "🇹🇷", rating: 79, code: "tr" }
     ]
   },
   E: {
     name: "Group E",
     teams: [
-      { id: "GER", name: "Germany", flag: "🇩🇪", rating: 85 },
-      { id: "CUW", name: "Curaçao", flag: "🇨🇼", rating: 64 },
-      { id: "CIV", name: "Ivory Coast", flag: "🇨🇮", rating: 78 },
-      { id: "ECU", name: "Ecuador", flag: "🇪🇨", rating: 77 }
+      { id: "GER", name: "Germany", flag: "🇩🇪", rating: 85, code: "de" },
+      { id: "CUW", name: "Curaçao", flag: "🇨🇼", rating: 64, code: "cw" },
+      { id: "CIV", name: "Ivory Coast", flag: "🇨🇮", rating: 78, code: "ci" },
+      { id: "ECU", name: "Ecuador", flag: "🇪🇨", rating: 77, code: "ec" }
     ]
   },
   F: {
     name: "Group F",
     teams: [
-      { id: "NED", name: "Netherlands", flag: "🇳🇱", rating: 84 },
-      { id: "JPN", name: "Japan", flag: "🇯🇵", rating: 81 },
-      { id: "SWE", name: "Sweden", flag: "🇸🇪", rating: 78 },
-      { id: "TUN", name: "Tunisia", flag: "🇹🇳", rating: 71 }
+      { id: "NED", name: "Netherlands", flag: "🇳🇱", rating: 84, code: "nl" },
+      { id: "JPN", name: "Japan", flag: "🇯🇵", rating: 81, code: "jp" },
+      { id: "SWE", name: "Sweden", flag: "🇸🇪", rating: 78, code: "se" },
+      { id: "TUN", name: "Tunisia", flag: "🇹🇳", rating: 71, code: "tn" }
     ]
   },
   G: {
     name: "Group G",
     teams: [
-      { id: "BEL", name: "Belgium", flag: "🇧🇪", rating: 83 },
-      { id: "EGY", name: "Egypt", flag: "🇪🇬", rating: 77 },
-      { id: "IRN", name: "Iran", flag: "🇮🇷", rating: 74 },
-      { id: "NZL", name: "New Zealand", flag: "🇳🇿", rating: 66 }
+      { id: "BEL", name: "Belgium", flag: "🇧🇪", rating: 83, code: "be" },
+      { id: "EGY", name: "Egypt", flag: "🇪🇬", rating: 77, code: "eg" },
+      { id: "IRN", name: "Iran", flag: "🇮🇷", rating: 74, code: "ir" },
+      { id: "NZL", name: "New Zealand", flag: "🇳🇿", rating: 66, code: "nz" }
     ]
   },
   H: {
     name: "Group H",
     teams: [
-      { id: "ESP", name: "Spain", flag: "🇪🇸", rating: 87 },
-      { id: "CPV", name: "Cabo Verde", flag: "🇨🇻", rating: 70 },
-      { id: "KSA", name: "Saudi Arabia", flag: "🇸🇦", rating: 72 },
-      { id: "URU", name: "Uruguay", flag: "🇺🇾", rating: 82 }
+      { id: "ESP", name: "Spain", flag: "🇪🇸", rating: 87, code: "es" },
+      { id: "CPV", name: "Cabo Verde", flag: "🇨🇻", rating: 70, code: "cv" },
+      { id: "KSA", name: "Saudi Arabia", flag: "🇸🇦", rating: 72, code: "sa" },
+      { id: "URU", name: "Uruguay", flag: "🇺🇾", rating: 82, code: "uy" }
     ]
   },
   I: {
     name: "Group I",
     teams: [
-      { id: "FRA", name: "France", flag: "🇫🇷", rating: 89 },
-      { id: "SEN", name: "Senegal", flag: "🇸🇳", rating: 80 },
-      { id: "IRQ", name: "Iraq", flag: "🇮🇶", rating: 69 },
-      { id: "NOR", name: "Norway", flag: "🇳🇴", rating: 78 }
+      { id: "FRA", name: "France", flag: "🇫🇷", rating: 89, code: "fr" },
+      { id: "SEN", name: "Senegal", flag: "🇸🇳", rating: 80, code: "sn" },
+      { id: "IRQ", name: "Iraq", flag: "🇮🇶", rating: 69, code: "iq" },
+      { id: "NOR", name: "Norway", flag: "🇳🇴", rating: 78, code: "no" }
     ]
   },
   J: {
     name: "Group J",
     teams: [
-      { id: "ARG", name: "Argentina", flag: "🇦🇷", rating: 89 },
-      { id: "ALG", name: "Algeria", flag: "🇩🇿", rating: 76 },
-      { id: "AUT", name: "Austria", flag: "🇦🇹", rating: 78 },
-      { id: "JOR", name: "Jordan", flag: "🇯🇴", rating: 68 }
+      { id: "ARG", name: "Argentina", flag: "🇦🇷", rating: 89, code: "ar" },
+      { id: "ALG", name: "Algeria", flag: "🇩🇿", rating: 76, code: "dz" },
+      { id: "AUT", name: "Austria", flag: "🇦🇹", rating: 78, code: "at" },
+      { id: "JOR", name: "Jordan", flag: "🇯🇴", rating: 68, code: "jo" }
     ]
   },
   K: {
     name: "Group K",
     teams: [
-      { id: "POR", name: "Portugal", flag: "🇵🇹", rating: 86 },
-      { id: "COD", name: "DR Congo", flag: "🇨🇩", rating: 73 },
-      { id: "UZB", name: "Uzbekistan", flag: "🇺🇿", rating: 71 },
-      { id: "COL", name: "Colombia", flag: "🇨🇴", rating: 82 }
+      { id: "POR", name: "Portugal", flag: "🇵🇹", rating: 86, code: "pt" },
+      { id: "COD", name: "DR Congo", flag: "🇨🇩", rating: 73, code: "cd" },
+      { id: "UZB", name: "Uzbekistan", flag: "🇺🇿", rating: 71, code: "uz" },
+      { id: "COL", name: "Colombia", flag: "🇨🇴", rating: 82, code: "co" }
     ]
   },
   L: {
     name: "Group L",
     teams: [
-      { id: "ENG", name: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", rating: 87 },
-      { id: "CRO", name: "Croatia", flag: "🇭🇷", rating: 81 },
-      { id: "GHA", name: "Ghana", flag: "🇬🇭", rating: 74 },
-      { id: "PAN", name: "Panama", flag: "🇵🇦", rating: 70 }
+      { id: "ENG", name: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", rating: 87, code: "gb-eng" },
+      { id: "CRO", name: "Croatia", flag: "🇭🇷", rating: 81, code: "hr" },
+      { id: "GHA", name: "Ghana", flag: "🇬🇭", rating: 74, code: "gh" },
+      { id: "PAN", name: "Panama", flag: "🇵🇦", rating: 70, code: "pa" }
     ]
   }
 };
+
+const TeamFlag = ({ team }) => {
+  if (!team || !team.code) return <span className="team-flag">{team?.flag || "🏳️"}</span>;
+  return (
+    <img 
+      src={`https://flagcdn.com/24x18/${team.code}.png`} 
+      srcSet={`https://flagcdn.com/48x36/${team.code}.png 2x, https://flagcdn.com/72x54/${team.code}.png 3x`}
+      width="24" 
+      height="18" 
+      alt={team.name} 
+      className="team-flag-img" 
+      style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '6px', borderRadius: '2px', border: '1px solid rgba(255,255,255,0.1)' }} 
+    />
+  );
+};
+
 
 // Bracket matchups for the Round of 32
 const KNOCKOUT_MATCHES = {
@@ -945,9 +961,9 @@ export default function App() {
               <h1 className="hero-title">FIFA WORLD CUP <span>PREDICTOR</span></h1>
               <p className="hero-subtitle">Predict the path to glory across North America. Build your bracket and compete on the global leaderboard.</p>
               <div className="hero-hosts">
-                <span className="host-badge"><span className="flag">🇨🇦</span> Canada</span>
-                <span className="host-badge"><span className="flag">🇲🇽</span> Mexico</span>
-                <span className="host-badge"><span className="flag">🇺🇸</span> USA</span>
+                <span className="host-badge"><img src="https://flagcdn.com/24x18/ca.png" width="24" height="18" style={{display:"inline-block", verticalAlign:"middle", marginRight:"6px", borderRadius:"2px"}} /> Canada</span>
+                <span className="host-badge"><img src="https://flagcdn.com/24x18/mx.png" width="24" height="18" style={{display:"inline-block", verticalAlign:"middle", marginRight:"6px", borderRadius:"2px"}} /> Mexico</span>
+                <span className="host-badge"><img src="https://flagcdn.com/24x18/us.png" width="24" height="18" style={{display:"inline-block", verticalAlign:"middle", marginRight:"6px", borderRadius:"2px"}} /> USA</span>
               </div>
             </div>
 
@@ -1026,7 +1042,7 @@ export default function App() {
                                   </td>
                                   <td className="table-cell">
                                     <div className="team-info">
-                                      <span className="team-flag">{team.flag}</span>
+                                      <TeamFlag team={team} />
                                       <span className="team-name">{team.name}</span>
                                     </div>
                                   </td>
@@ -1095,7 +1111,7 @@ export default function App() {
                         >
                           <div className="third-team-details">
                             <span className="third-team-group-badge">Group {team.groupKey}</span>
-                            <span className="team-flag">{team.flag}</span>
+                            <TeamFlag team={team} />
                             <span className="team-name" style={{ maxWidth: '100px' }}>{team.name}</span>
                           </div>
                           
@@ -1203,7 +1219,7 @@ export default function App() {
                                 <span className="match-team-source">{match.teamA_src}</span>
                                 {teamA ? (
                                   <>
-                                    <span className="team-flag">{teamA.flag}</span>
+                                    <TeamFlag team={teamA} />
                                     <span className="match-team-name">{teamA.name}</span>
                                   </>
                                 ) : (
@@ -1230,7 +1246,7 @@ export default function App() {
                                 <span className="match-team-source">{match.teamB_src}</span>
                                 {teamB ? (
                                   <>
-                                    <span className="team-flag">{teamB.flag}</span>
+                                    <TeamFlag team={teamB} />
                                     <span className="match-team-name">{teamB.name}</span>
                                   </>
                                 ) : (
@@ -1336,7 +1352,7 @@ export default function App() {
                         <td className="leaderboard-td">
                           {player.champTeam ? (
                             <span className={`champion-predicted-badge ${player.isChampCorrect ? 'winner-correct' : ''}`}>
-                              <span>{player.champTeam.flag}</span>
+                              <TeamFlag team={player.champTeam} />
                               <span>{player.champTeam.name}</span>
                             </span>
                           ) : (
@@ -1437,7 +1453,7 @@ export default function App() {
                               </td>
                               <td className="table-cell">
                                 <div className="team-info">
-                                  <span className="team-flag">{team.flag}</span>
+                                  <TeamFlag team={team} />
                                   <span className="team-name">{team.name}</span>
                                 </div>
                               </td>
@@ -1487,7 +1503,7 @@ export default function App() {
                     >
                       <div className="third-team-details">
                         <span className="third-team-group-badge">Group {team.groupKey}</span>
-                        <span className="team-flag">{team.flag}</span>
+                        <TeamFlag team={team} />
                         <span className="team-name" style={{ maxWidth: '100px' }}>{team.name}</span>
                       </div>
                       <div className="checkbox-circle">✓</div>
@@ -1546,7 +1562,7 @@ export default function App() {
                             <span className="match-team-source">{match.teamA_src}</span>
                             {teamA ? (
                               <>
-                                <span className="team-flag">{teamA.flag}</span>
+                                <TeamFlag team={teamA} />
                                 <span className="match-team-name">{teamA.name}</span>
                               </>
                             ) : (
@@ -1569,7 +1585,7 @@ export default function App() {
                             <span className="match-team-source">{match.teamB_src}</span>
                             {teamB ? (
                               <>
-                                <span className="team-flag">{teamB.flag}</span>
+                                <TeamFlag team={teamB} />
                                 <span className="match-team-name">{teamB.name}</span>
                               </>
                             ) : (
@@ -1960,7 +1976,7 @@ export default function App() {
                             if (!team) return null;
                             return (
                               <div key={teamId} className="compare-team-inline">
-                                <span>{idx + 1}. {team.flag} {team.name}</span>
+                                <span>{idx + 1}. <TeamFlag team={team} /> {team.name}</span>
                               </div>
                             );
                           })}
@@ -1984,7 +2000,7 @@ export default function App() {
                         className="champion-predicted-badge"
                         style={{ borderColor: 'var(--border-color)' }}
                       >
-                        {team.flag} {team.name}
+                        <TeamFlag team={team} /> {team.name}
                       </span>
                     );
                   })}
@@ -2013,7 +2029,7 @@ export default function App() {
                             <span className="compare-label-type">Predicted Winner:</span>
                             {predWinner ? (
                               <span className="compare-value-team">
-                                {predWinner.flag} {predWinner.name}
+                                <TeamFlag team={predWinner} /> {predWinner.name}
                               </span>
                             ) : (
                               <span style={{ color: 'var(--text-muted)' }}>None</span>
