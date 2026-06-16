@@ -16,7 +16,8 @@ import {
   RefreshCw, 
   ChevronRight, 
   ChevronLeft,
-  Info
+  Info,
+  Clock
 } from 'lucide-react';
 import { auth, db, signInWithGoogle, logout } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -475,6 +476,7 @@ export default function App() {
   const [activeBracketRound, setActiveBracketRound] = useState('R32');
   const [adminBracketRound, setAdminBracketRound] = useState('R32');
   const [userPredictions, setUserPredictions] = useState(createInitialPredictions());
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   // Official Results State
   const [officialResults, setOfficialResults] = useState(createInitialPredictions());
@@ -514,9 +516,11 @@ export default function App() {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           setUserPredictions(docSnap.data().predictions);
+          setHasSubmitted(docSnap.data().hasSubmittedOfficial || false);
         } else {
           const initPreds = createInitialPredictions();
           setUserPredictions(initPreds);
+          setHasSubmitted(false);
           await setDoc(docRef, {
             id: user.email,
             name: userProfile.name,
@@ -615,6 +619,10 @@ export default function App() {
 
   // Shift team position in Group predictions
   const moveTeamInGroup = (groupKey, teamId, direction, isAdmin = false) => {
+    if (!isAdmin && hasSubmitted) {
+      addToast("Your bracket is permanently locked!", "error");
+      return;
+    }
     const currentData = isAdmin ? officialResults : userPredictions;
     const setter = isAdmin ? setOfficialResults : setUserPredictions;
     
@@ -647,6 +655,10 @@ export default function App() {
 
   // Toggle third place wildcard team selection
   const toggleBestThirdTeam = (teamId, isAdmin = false) => {
+    if (!isAdmin && hasSubmitted) {
+      addToast("Your bracket is permanently locked!", "error");
+      return;
+    }
     const currentData = isAdmin ? officialResults : userPredictions;
     const setter = isAdmin ? setOfficialResults : setUserPredictions;
     
@@ -690,6 +702,10 @@ export default function App() {
 
   // Pick winner in a knockout match
   const selectKnockoutWinner = (matchId, winnerId, isAdmin = false) => {
+    if (!isAdmin && hasSubmitted) {
+      addToast("Your bracket is permanently locked!", "error");
+      return;
+    }
     const currentData = isAdmin ? officialResults : userPredictions;
     const setter = isAdmin ? setOfficialResults : setUserPredictions;
 
@@ -766,15 +782,19 @@ export default function App() {
       setAuthModal('chooser');
       return;
     }
+    const timestamp = new Date().toISOString();
     await setDoc(doc(db, 'users', currentUser.email), {
       id: currentUser.email,
       name: currentUser.name,
       email: currentUser.email,
       avatar: currentUser.avatar,
       predictions: userPredictions,
-      isMock: false
+      isMock: false,
+      hasSubmittedOfficial: true,
+      submittedAt: timestamp
     }, { merge: true });
-    addToast("Predictions saved securely to cloud!");
+    setHasSubmitted(true);
+    addToast("Predictions saved securely and locked in!");
     setActiveTab('leaderboard');
   };
 
@@ -1187,12 +1207,18 @@ export default function App() {
 
                   {isPredictionComplete(userPredictions) ? (
                     currentUser ? (
-                      <button 
-                        className="btn-gold" 
-                        onClick={saveUserPredictionsToFirebase}
-                      >
-                        <Sparkles size={16} /> Save & Submit Predictions
-                      </button>
+                      hasSubmitted ? (
+                        <button className="btn-gold" style={{ filter: 'grayscale(1)', cursor: 'not-allowed', opacity: 0.7 }}>
+                          <Sparkles size={16} /> Bracket Locked 🔒
+                        </button>
+                      ) : (
+                        <button 
+                          className="btn-gold" 
+                          onClick={saveUserPredictionsToFirebase}
+                        >
+                          <Sparkles size={16} /> Save & Submit Predictions
+                        </button>
+                      )
                     ) : (
                       <button className="btn-gold" onClick={() => setAuthModal('chooser')}>
                         <LogIn size={16} /> Sign In to Save & Join Leaderboard
@@ -1788,6 +1814,12 @@ export default function App() {
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                     Points and ranking will be revealed soon!
                   </p>
+                  {viewingUserDetail.submittedAt && (
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginTop: '0.25rem' }}>
+                      <Clock size={12} style={{ display: 'inline', marginRight: '4px', verticalAlign: '-2px' }} />
+                      Submitted: {new Date(viewingUserDetail.submittedAt).toLocaleString()}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
