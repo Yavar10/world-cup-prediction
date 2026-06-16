@@ -19,8 +19,10 @@ import {
   Info,
   Clock,
   ArrowBigUp,
-  ArrowBigDown
+  ArrowBigDown,
+  Download
 } from 'lucide-react';
+import html2canvas from 'html2canvas';
 import { auth, db, signInWithGoogle, logout } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, setDoc, onSnapshot, collection, updateDoc } from 'firebase/firestore';
@@ -861,6 +863,74 @@ export default function App() {
     }
   };
 
+  const [isCapturingKnockout, setIsCapturingKnockout] = useState(false);
+
+  const downloadGraphic = async (elementId, filename) => {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        backgroundColor: '#0a0a0f',
+        useCORS: true
+      });
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = dataUrl;
+      link.click();
+    } catch (e) {
+      console.error('Failed to generate graphic', e);
+      addToast('Failed to generate graphic', 'error');
+    }
+  };
+
+  const handleDownloadKnockout = () => {
+    setIsCapturingKnockout(true);
+    setTimeout(async () => {
+      await downloadGraphic('knockout-bracket-capture', 'world-cup-knockout.png');
+      setIsCapturingKnockout(false);
+    }, 150);
+  };
+
+  const renderExportColumn = (title, matches, isCenter = false) => (
+    <div key={title} style={{ display: 'flex', flexDirection: 'column', minWidth: isCenter ? '320px' : '280px' }}>
+      <h3 style={{ textAlign: 'center', color: 'var(--accent-gold)', marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: 'var(--font-display)', fontSize: '1rem' }}>{title}</h3>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: isCenter ? 'center' : 'space-around', flex: 1, gap: '1.5rem' }}>
+        {matches.map(mId => {
+          const match = KNOCKOUT_MATCHES[mId];
+          const { teamA, teamB } = resolveTeamsForMatch(match.id, userPredictions);
+          const currentWinnerId = userPredictions.knockout[match.id];
+          const isChamp = match.round === 'FI';
+          return (
+            <div key={match.id} style={{ backgroundColor: isChamp ? 'rgba(251, 191, 36, 0.05)' : 'var(--bg-secondary)', borderRadius: '0.75rem', border: `1px solid ${isChamp ? 'var(--accent-gold-border)' : 'var(--border-color)'}`, padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '0.25rem' }}>
+                <span style={{ color: 'var(--accent-gold)', backgroundColor: 'var(--accent-gold-bg)', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>{match.title}</span>
+                <span style={{ textTransform: 'uppercase' }}>{match.round === '3RD' ? 'Play-off' : match.round === 'FI' ? 'Championship' : 'Knockout Stage'}</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.6rem 0.8rem', borderRadius: '0.5rem', backgroundColor: currentWinnerId === teamA?.id ? 'var(--accent-green-bg)' : 'var(--bg-tertiary)', border: `1px solid ${currentWinnerId === teamA?.id ? 'var(--accent-green-border)' : 'transparent'}` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <span style={{ fontSize: '0.65rem', color: currentWinnerId === teamA?.id ? 'var(--accent-green)' : 'var(--text-muted)', backgroundColor: currentWinnerId === teamA?.id ? 'rgba(0, 240, 118, 0.15)' : 'rgba(255, 255, 255, 0.05)', padding: '0.1rem 0.35rem', borderRadius: '3px' }}>{match.teamA_src}</span>
+                    {teamA ? <><TeamFlag team={teamA} /><span style={{ fontWeight: 600, color: '#fff', fontSize: '0.9rem' }}>{teamA.name}</span></> : <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>TBD</span>}
+                  </div>
+                  {currentWinnerId === teamA?.id && <span style={{ color: 'var(--accent-green)' }}>✓</span>}
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.6rem 0.8rem', borderRadius: '0.5rem', backgroundColor: currentWinnerId === teamB?.id ? 'var(--accent-green-bg)' : 'var(--bg-tertiary)', border: `1px solid ${currentWinnerId === teamB?.id ? 'var(--accent-green-border)' : 'transparent'}` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <span style={{ fontSize: '0.65rem', color: currentWinnerId === teamB?.id ? 'var(--accent-green)' : 'var(--text-muted)', backgroundColor: currentWinnerId === teamB?.id ? 'rgba(0, 240, 118, 0.15)' : 'rgba(255, 255, 255, 0.05)', padding: '0.1rem 0.35rem', borderRadius: '3px' }}>{match.teamB_src}</span>
+                    {teamB ? <><TeamFlag team={teamB} /><span style={{ fontWeight: 600, color: '#fff', fontSize: '0.9rem' }}>{teamB.name}</span></> : <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>TBD</span>}
+                  </div>
+                  {currentWinnerId === teamB?.id && <span style={{ color: 'var(--accent-green)' }}>✓</span>}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+
   // ==========================================
   // 5. VIEW SUB-COMPONENTS
   // ==========================================
@@ -1004,12 +1074,19 @@ export default function App() {
             {/* Step 1: Groups Standings */}
             {predictorStep === 0 && (
               <div>
-                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                  <h2>Predict Group Stage Standings</h2>
-                  <p style={{ color: 'var(--text-secondary)' }}>Use Up/Down arrows to rank the teams in each group. The top 2 (Green) and the best 3rd places will advance.</p>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
+                  <button className="btn-secondary" onClick={() => downloadGraphic('group-stage-capture', 'world-cup-groups.png')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Download size={16} /> Share Graphic
+                  </button>
                 </div>
-                
-                <div className="groups-grid">
+
+                <div id="group-stage-capture" style={{ padding: '2rem', backgroundColor: '#0a0a0f', borderRadius: '16px', margin: '-1rem' }}>
+                  <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                    <h2 style={{ fontFamily: 'var(--font-display)' }}>2026 World Cup Group Predictions</h2>
+                    <p style={{ color: 'var(--text-secondary)' }}>My Group Stage Standings</p>
+                  </div>
+                  
+                  <div className="groups-grid">
                   {Object.keys(GROUPS).map(groupKey => {
                     const group = GROUPS[groupKey];
                     const predictedStandings = userPredictions.groups[groupKey] || [];
@@ -1074,6 +1151,7 @@ export default function App() {
                       </div>
                     );
                   })}
+                </div>
                 </div>
 
                 <div className="wizard-footer">
@@ -1142,6 +1220,47 @@ export default function App() {
             {/* Step 3: Bracket Play-offs */}
             {predictorStep === 2 && (
               <div>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
+                  <button className="btn-secondary" onClick={handleDownloadKnockout} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Download size={16} /> Share Graphic
+                  </button>
+                </div>
+
+                {isCapturingKnockout && (
+                  <div style={{ position: 'absolute', top: '-10000px', left: '-10000px' }}>
+                    <div id="knockout-bracket-capture" style={{ width: 'max-content', padding: '4rem', backgroundColor: '#0a0a0f' }}>
+                      <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                        <h2 style={{ fontSize: '3.5rem', color: '#fff', fontFamily: 'var(--font-display)', margin: '0 0 1rem 0' }}>2026 World Cup Knockout Bracket</h2>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '1.5rem', margin: 0 }}>My Path to Glory</p>
+                      </div>
+                      
+                      <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center' }}>
+                        {/* Left Bracket */}
+                        <div style={{ display: 'flex', gap: '2rem' }}>
+                          {renderExportColumn('Round of 32', [73, 74, 75, 76, 77, 78, 79, 80])}
+                          {renderExportColumn('Round of 16', [89, 90, 91, 92])}
+                          {renderExportColumn('Quarterfinals', [97, 98])}
+                          {renderExportColumn('Semifinals', [101])}
+                        </div>
+                        
+                        {/* Center */}
+                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '3rem', minWidth: '350px' }}>
+                          {renderExportColumn('Championship', [104], true)}
+                          {renderExportColumn('Third Place', [103], true)}
+                        </div>
+                        
+                        {/* Right Bracket */}
+                        <div style={{ display: 'flex', gap: '2rem' }}>
+                          {renderExportColumn('Semifinals', [102])}
+                          {renderExportColumn('Quarterfinals', [99, 100])}
+                          {renderExportColumn('Round of 16', [93, 94, 95, 96])}
+                          {renderExportColumn('Round of 32', [81, 82, 83, 84, 85, 86, 87, 88])}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                   <h2>Predict Knockout Bracket Winner</h2>
                   <p style={{ color: 'var(--text-secondary)' }}>Click on a team to predict them as the winner and advance them to the next round.</p>
