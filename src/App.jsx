@@ -829,7 +829,7 @@ export default function App() {
             className={`tab-btn ${activeTab === 'leaderboard' ? 'active' : ''}`}
             onClick={() => setActiveTab('leaderboard')}
           >
-            <Users size={16} /> Leaderboard
+            <Users size={16} /> Community
           </button>
           {isUserAdmin && (
             <button 
@@ -1215,36 +1215,26 @@ export default function App() {
           <div className="leaderboard-container">
             <div className="leaderboard-header">
               <div className="leaderboard-title-box">
-                <h2>Predictor Leaderboard</h2>
-                <p>Real-time standing of all players. Click on a player to view their full prediction details.</p>
+                <h2>Community Predictions</h2>
+                <p>Browse what everyone else is predicting. Click on a player to view their full bracket.</p>
               </div>
 
-              {officialResults.knockout[104] ? (
-                <div className="counter-badge completed" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Sparkles size={16} /> Official Tournament Concluded!
-                </div>
-              ) : (
-                <div className="counter-badge" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Info size={16} /> Tournament In-Progress. Use Admin Panel to simulate/test results.
-                </div>
-              )}
+              <div className="counter-badge" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'var(--accent-gold)', color: '#000', fontWeight: 'bold' }}>
+                <Sparkles size={16} /> 
+                Leaderboard rankings and points will be unlocked after the real-world Group Stage is completed!
+              </div>
             </div>
 
             <div className="leaderboard-table-card">
               <table className="leaderboard-table">
                 <thead>
                   <tr>
-                    <th className="leaderboard-th center" style={{ width: '70px' }}>Rank</th>
                     <th className="leaderboard-th">Player</th>
-                    <th className="leaderboard-th center">Groups Pts</th>
-                    <th className="leaderboard-th center">Wildcard Pts</th>
-                    <th className="leaderboard-th center">Knockout Pts</th>
-                    <th className="leaderboard-th">Champ Pick</th>
-                    <th className="leaderboard-th center" style={{ width: '120px' }}>Total Pts</th>
+                    <th className="leaderboard-th">Predicted Champion</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {scoredLeaderboard.map((player, idx) => {
+                  {scoredLeaderboard.map((player) => {
                     const isSelf = currentUser && player.email === currentUser.email;
                     return (
                       <tr 
@@ -1252,12 +1242,6 @@ export default function App() {
                         className={`leaderboard-tr ${isSelf ? 'current-user' : ''}`}
                         onClick={() => setViewingUserDetail(player)}
                       >
-                        <td className="leaderboard-td center rank-cell">
-                          {idx === 0 ? <span className="rank-medal" title="Gold">🥇</span> : 
-                           idx === 1 ? <span className="rank-medal" title="Silver">🥈</span> : 
-                           idx === 2 ? <span className="rank-medal" title="Bronze">🥉</span> : 
-                           idx + 1}
-                        </td>
                         <td className="leaderboard-td">
                           <div className="player-cell-info">
                             <img src={player.avatar} alt={player.name} className="player-avatar" />
@@ -1267,9 +1251,6 @@ export default function App() {
                             </div>
                           </div>
                         </td>
-                        <td className="leaderboard-td center points-breakdown">{player.scoreBreakdown.groups}</td>
-                        <td className="leaderboard-td center points-breakdown">{player.scoreBreakdown.bestThirds}</td>
-                        <td className="leaderboard-td center points-breakdown">{player.scoreBreakdown.knockout}</td>
                         <td className="leaderboard-td">
                           {player.champTeam ? (
                             <span className={`champion-predicted-badge ${player.isChampCorrect ? 'winner-correct' : ''}`}>
@@ -1279,9 +1260,6 @@ export default function App() {
                           ) : (
                             <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>None</span>
                           )}
-                        </td>
-                        <td className="leaderboard-td center">
-                          <span className="total-points-badge">{player.scoreBreakdown.total}</span>
                         </td>
                       </tr>
                     );
