@@ -3,12 +3,12 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/
 import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, getDocs } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBSJ-MqbjgrO8u7R-dxcS5sRxK8DWVMRxQ",
-  authDomain: "worldcup-predictor-51c31.firebaseapp.com",
-  projectId: "worldcup-predictor-51c31",
-  storageBucket: "worldcup-predictor-51c31.firebasestorage.app",
-  messagingSenderId: "799838659312",
-  appId: "1:799838659312:web:6b44be660a3108101b5835"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);

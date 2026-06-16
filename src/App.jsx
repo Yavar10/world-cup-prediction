@@ -26,10 +26,10 @@ import { doc, getDoc, setDoc, onSnapshot, collection } from 'firebase/firestore'
 // 1. DATA CONSTANTS & SETUP
 // ==========================================
 
-// Add your real Google email address here to unlock the Admin Panel!
+// Add your real Google email address to the .env file as VITE_ADMIN_EMAIL to unlock the Admin Panel!
 const ADMIN_EMAILS = [
-  "zuri00014@gmail.com"
-];
+  import.meta.env.VITE_ADMIN_EMAIL
+].filter(Boolean);
 
 const GROUPS = {
   A: {
