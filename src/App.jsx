@@ -1278,6 +1278,12 @@ export default function App() {
                             <div>
                               <span className="player-name-text">{player.name}</span>
                               {isSelf && <span className="user-tag">You</span>}
+                              {player.submittedAt && (
+                                <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.1rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                  <Clock size={10} />
+                                  <span>{new Date(player.submittedAt).toLocaleDateString()}</span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </td>
