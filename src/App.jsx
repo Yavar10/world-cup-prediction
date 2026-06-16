@@ -726,7 +726,8 @@ export default function App() {
       setAuthModal(null);
       addToast("Successfully logged in with Google!");
     } catch (e) {
-      addToast("Failed to login with Google", "error");
+      console.error("Firebase Google Auth Error:", e);
+      addToast(`Failed to login: ${e.message}`, "error");
     } finally {
       setSimulatedLoading(false);
     }
