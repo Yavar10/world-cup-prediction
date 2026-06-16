@@ -1148,37 +1148,50 @@ export default function App() {
                 </div>
 
                 {/* Bracket Tabs */}
-                <div className="bracket-navigation">
-                  <button 
-                    className={`bracket-nav-btn ${activeBracketRound === 'R32' ? 'active' : ''}`}
-                    onClick={() => setActiveBracketRound('R32')}
+                <div className="bracket-tabs-container">
+                  <select 
+                    className="bracket-nav-select"
+                    value={activeBracketRound}
+                    onChange={(e) => setActiveBracketRound(e.target.value)}
                   >
-                    Round of 32 (16 Matches)
-                  </button>
-                  <button 
-                    className={`bracket-nav-btn ${activeBracketRound === 'R16' ? 'active' : ''}`}
-                    onClick={() => setActiveBracketRound('R16')}
-                  >
-                    Round of 16 (8 Matches)
-                  </button>
-                  <button 
-                    className={`bracket-nav-btn ${activeBracketRound === 'QF' ? 'active' : ''}`}
-                    onClick={() => setActiveBracketRound('QF')}
-                  >
-                    Quarterfinals (4 Matches)
-                  </button>
-                  <button 
-                    className={`bracket-nav-btn ${activeBracketRound === 'SF' ? 'active' : ''}`}
-                    onClick={() => setActiveBracketRound('SF')}
-                  >
-                    Semifinals (2 Matches)
-                  </button>
-                  <button 
-                    className={`bracket-nav-btn ${activeBracketRound === 'FIN' ? 'active' : ''}`}
-                    onClick={() => setActiveBracketRound('FIN')}
-                  >
-                    Finals & 3rd Place
-                  </button>
+                    <option value="R32">Round of 32 (16 Matches)</option>
+                    <option value="R16">Round of 16 (8 Matches)</option>
+                    <option value="QF">Quarterfinals (4 Matches)</option>
+                    <option value="SF">Semifinals (2 Matches)</option>
+                    <option value="FIN">Finals & 3rd Place</option>
+                  </select>
+                  <div className="bracket-navigation">
+                    <button 
+                      className={`bracket-nav-btn ${activeBracketRound === 'R32' ? 'active' : ''}`}
+                      onClick={() => setActiveBracketRound('R32')}
+                    >
+                      Round of 32 (16 Matches)
+                    </button>
+                    <button 
+                      className={`bracket-nav-btn ${activeBracketRound === 'R16' ? 'active' : ''}`}
+                      onClick={() => setActiveBracketRound('R16')}
+                    >
+                      Round of 16 (8 Matches)
+                    </button>
+                    <button 
+                      className={`bracket-nav-btn ${activeBracketRound === 'QF' ? 'active' : ''}`}
+                      onClick={() => setActiveBracketRound('QF')}
+                    >
+                      Quarterfinals (4 Matches)
+                    </button>
+                    <button 
+                      className={`bracket-nav-btn ${activeBracketRound === 'SF' ? 'active' : ''}`}
+                      onClick={() => setActiveBracketRound('SF')}
+                    >
+                      Semifinals (2 Matches)
+                    </button>
+                    <button 
+                      className={`bracket-nav-btn ${activeBracketRound === 'FIN' ? 'active' : ''}`}
+                      onClick={() => setActiveBracketRound('FIN')}
+                    >
+                      Finals & 3rd Place
+                    </button>
+                  </div>
                 </div>
 
                 {/* Matches List */}
@@ -1321,8 +1334,8 @@ export default function App() {
                 <thead>
                   <tr>
                     <th className="leaderboard-th">Player</th>
-                    <th className="leaderboard-th">Predicted Champion</th>
-                    <th className="leaderboard-th center">Community Votes</th>
+                    <th className="leaderboard-th"><span className="hide-on-mobile">Predicted </span>Champ<span className="hide-on-mobile">ion</span></th>
+                    <th className="leaderboard-th center"><span className="hide-on-mobile">Community </span>Votes</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1353,26 +1366,28 @@ export default function App() {
                           {player.champTeam ? (
                             <span className={`champion-predicted-badge ${player.isChampCorrect ? 'winner-correct' : ''}`}>
                               <TeamFlag team={player.champTeam} />
-                              <span>{player.champTeam.name}</span>
+                              <span className="champion-name-text">{player.champTeam.name}</span>
                             </span>
                           ) : (
                             <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>None</span>
                           )}
                         </td>
                         <td className="leaderboard-td center">
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem', fontWeight: 'bold' }}>
+                          <div className="vote-controls">
                             <button 
+                              className="vote-btn"
                               onClick={(e) => { e.stopPropagation(); handleVote(player.email, 'up'); }}
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: player.upvoters?.includes(currentUser?.email) ? 'var(--accent-green)' : 'var(--text-muted)' }}
+                              style={{ color: player.upvoters?.includes(currentUser?.email) ? 'var(--accent-green)' : 'var(--text-muted)' }}
                             >
                               <ArrowBigUp size={24} fill={player.upvoters?.includes(currentUser?.email) ? 'var(--accent-green)' : 'none'} />
                             </button>
-                            <span style={{ minWidth: '32px', textAlign: 'center', fontSize: '1rem', color: ((player.upvoters?.length || 0) - (player.downvoters?.length || 0)) > 0 ? 'var(--accent-green)' : ((player.upvoters?.length || 0) - (player.downvoters?.length || 0)) < 0 ? 'var(--accent-red)' : 'var(--text-primary)' }}>
+                            <span className="vote-score" style={{ color: ((player.upvoters?.length || 0) - (player.downvoters?.length || 0)) > 0 ? 'var(--accent-green)' : ((player.upvoters?.length || 0) - (player.downvoters?.length || 0)) < 0 ? 'var(--accent-red)' : 'var(--text-primary)' }}>
                               {((player.upvoters?.length || 0) - (player.downvoters?.length || 0)) > 0 ? `+${(player.upvoters?.length || 0) - (player.downvoters?.length || 0)}` : ((player.upvoters?.length || 0) - (player.downvoters?.length || 0))}
                             </span>
                             <button 
+                              className="vote-btn"
                               onClick={(e) => { e.stopPropagation(); handleVote(player.email, 'down'); }}
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: player.downvoters?.includes(currentUser?.email) ? 'var(--accent-red)' : 'var(--text-muted)' }}
+                              style={{ color: player.downvoters?.includes(currentUser?.email) ? 'var(--accent-red)' : 'var(--text-muted)' }}
                             >
                               <ArrowBigDown size={24} fill={player.downvoters?.includes(currentUser?.email) ? 'var(--accent-red)' : 'none'} />
                             </button>
@@ -1513,20 +1528,33 @@ export default function App() {
               </div>
             </div>
 
-            <div className="bracket-navigation" style={{ border: '1px solid rgba(251,191,36,0.15)' }}>
-              {['R32', 'R16', 'QF', 'SF', 'FIN'].map(round => (
-                <button 
-                  key={round}
-                  className={`bracket-nav-btn ${adminBracketRound === round ? 'active' : ''}`}
-                  onClick={() => setAdminBracketRound(round)}
-                >
-                  {round === 'R32' && "Round of 32"}
-                  {round === 'R16' && "Round of 16"}
-                  {round === 'QF' && "Quarterfinals"}
-                  {round === 'SF' && "Semifinals"}
-                  {round === 'FIN' && "Finals"}
-                </button>
-              ))}
+            <div className="bracket-tabs-container">
+              <select 
+                className="bracket-nav-select"
+                value={adminBracketRound}
+                onChange={(e) => setAdminBracketRound(e.target.value)}
+              >
+                <option value="R32">Round of 32</option>
+                <option value="R16">Round of 16</option>
+                <option value="QF">Quarterfinals</option>
+                <option value="SF">Semifinals</option>
+                <option value="FIN">Finals</option>
+              </select>
+              <div className="bracket-navigation" style={{ border: '1px solid rgba(251,191,36,0.15)' }}>
+                {['R32', 'R16', 'QF', 'SF', 'FIN'].map(round => (
+                  <button 
+                    key={round}
+                    className={`bracket-nav-btn ${adminBracketRound === round ? 'active' : ''}`}
+                    onClick={() => setAdminBracketRound(round)}
+                  >
+                    {round === 'R32' && "Round of 32"}
+                    {round === 'R16' && "Round of 16"}
+                    {round === 'QF' && "Quarterfinals"}
+                    {round === 'SF' && "Semifinals"}
+                    {round === 'FIN' && "Finals"}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="matches-grid">
