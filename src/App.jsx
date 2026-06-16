@@ -17,11 +17,13 @@ import {
   ChevronRight, 
   ChevronLeft,
   Info,
-  Clock
+  Clock,
+  ArrowBigUp,
+  ArrowBigDown
 } from 'lucide-react';
 import { auth, db, signInWithGoogle, logout } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc, setDoc, onSnapshot, collection } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot, collection, updateDoc } from 'firebase/firestore';
 
 // ==========================================
 // 1. DATA CONSTANTS & SETUP
@@ -605,12 +607,12 @@ export default function App() {
       isChampCorrect
     };
   }).sort((a, b) => {
-    // Sort by total score, then by knockout score, then by group score, then alphabetically
-    if (b.scoreBreakdown.total !== a.scoreBreakdown.total) {
-      return b.scoreBreakdown.total - a.scoreBreakdown.total;
-    }
-    if (b.scoreBreakdown.knockout !== a.scoreBreakdown.knockout) {
-      return b.scoreBreakdown.knockout - a.scoreBreakdown.knockout;
+    // Sort by net community votes, then alphabetically
+    const scoreA = (a.upvoters?.length || 0) - (a.downvoters?.length || 0);
+    const scoreB = (b.upvoters?.length || 0) - (b.downvoters?.length || 0);
+    
+    if (scoreB !== scoreA) {
+      return scoreB - scoreA;
     }
     return a.name.localeCompare(b.name);
   });
@@ -784,6 +786,9 @@ export default function App() {
       setAuthModal('chooser');
       return;
     }
+    const confirmSubmit = window.confirm("Are you sure you want to submit?\n\nYour bracket will be PERMANENTLY LOCKED and you will not be able to edit it afterwards.");
+    if (!confirmSubmit) return;
+
     const timestamp = new Date().toISOString();
     await setDoc(doc(db, 'users', currentUser.email), {
       id: currentUser.email,
@@ -798,6 +803,43 @@ export default function App() {
     setHasSubmitted(true);
     addToast("Predictions saved securely and locked in!");
     setActiveTab('leaderboard');
+  };
+
+  const handleVote = async (targetEmail, voteType) => {
+    if (!currentUser) {
+      addToast("Please sign in to vote!", "error");
+      return;
+    }
+    if (currentUser.email === targetEmail) {
+      addToast("You cannot vote on your own bracket!", "error");
+      return;
+    }
+
+    try {
+      const targetDoc = doc(db, 'users', targetEmail);
+      const snap = await getDoc(targetDoc);
+      if (!snap.exists()) return;
+      
+      let data = snap.data();
+      let upvoters = data.upvoters || [];
+      let downvoters = data.downvoters || [];
+
+      const wasUpvoted = upvoters.includes(currentUser.email);
+      const wasDownvoted = downvoters.includes(currentUser.email);
+
+      upvoters = upvoters.filter(email => email !== currentUser.email);
+      downvoters = downvoters.filter(email => email !== currentUser.email);
+
+      if (voteType === 'up' && !wasUpvoted) {
+        upvoters.push(currentUser.email);
+      } else if (voteType === 'down' && !wasDownvoted) {
+        downvoters.push(currentUser.email);
+      }
+
+      await updateDoc(targetDoc, { upvoters, downvoters });
+    } catch (e) {
+      addToast("Failed to register vote.", "error");
+    }
   };
 
   // ==========================================
@@ -1261,6 +1303,7 @@ export default function App() {
                   <tr>
                     <th className="leaderboard-th">Player</th>
                     <th className="leaderboard-th">Predicted Champion</th>
+                    <th className="leaderboard-th center">Community Votes</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1296,6 +1339,25 @@ export default function App() {
                           ) : (
                             <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>None</span>
                           )}
+                        </td>
+                        <td className="leaderboard-td center">
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem', fontWeight: 'bold' }}>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); handleVote(player.email, 'up'); }}
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: player.upvoters?.includes(currentUser?.email) ? 'var(--accent-green)' : 'var(--text-muted)' }}
+                            >
+                              <ArrowBigUp size={24} fill={player.upvoters?.includes(currentUser?.email) ? 'var(--accent-green)' : 'none'} />
+                            </button>
+                            <span style={{ minWidth: '32px', textAlign: 'center', fontSize: '1rem', color: ((player.upvoters?.length || 0) - (player.downvoters?.length || 0)) > 0 ? 'var(--accent-green)' : ((player.upvoters?.length || 0) - (player.downvoters?.length || 0)) < 0 ? 'var(--accent-red)' : 'var(--text-primary)' }}>
+                              {((player.upvoters?.length || 0) - (player.downvoters?.length || 0)) > 0 ? `+${(player.upvoters?.length || 0) - (player.downvoters?.length || 0)}` : ((player.upvoters?.length || 0) - (player.downvoters?.length || 0))}
+                            </span>
+                            <button 
+                              onClick={(e) => { e.stopPropagation(); handleVote(player.email, 'down'); }}
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: player.downvoters?.includes(currentUser?.email) ? 'var(--accent-red)' : 'var(--text-muted)' }}
+                            >
+                              <ArrowBigDown size={24} fill={player.downvoters?.includes(currentUser?.email) ? 'var(--accent-red)' : 'none'} />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
