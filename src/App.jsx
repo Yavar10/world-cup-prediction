@@ -577,7 +577,9 @@ export default function App() {
           avatar: player.avatar,
           predictions: simulateFullTournament(player.biasTeam, 35 - player.luck),
           isMock: true,
-          scoreBreakdown: { groups: 0, bestThirds: 0, knockout: 0, total: 0 }
+          scoreBreakdown: { groups: 0, bestThirds: 0, knockout: 0, total: 0 },
+          hasSubmittedOfficial: true,
+          submittedAt: new Date(Date.now() - Math.random() * 10000000000).toISOString()
         });
       }
     });
