@@ -488,6 +488,7 @@ export default function App() {
   
   // Modal for viewing other user's predictions details
   const [viewingUserDetail, setViewingUserDetail] = useState(null);
+  const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
 
   // Toast Alerts State
   const [toasts, setToasts] = useState([]);
@@ -781,14 +782,16 @@ export default function App() {
     addToast("Official results reset to in-progress.");
   };
 
-  const saveUserPredictionsToFirebase = async () => {
+  const triggerSubmitConfirm = () => {
     if (!currentUser) {
       setAuthModal('chooser');
       return;
     }
-    const confirmSubmit = window.confirm("Are you sure you want to submit?\n\nYour bracket will be PERMANENTLY LOCKED and you will not be able to edit it afterwards.");
-    if (!confirmSubmit) return;
+    setShowSubmitConfirm(true);
+  };
 
+  const executeSavePredictions = async () => {
+    setShowSubmitConfirm(false);
     const timestamp = new Date().toISOString();
     await setDoc(doc(db, 'users', currentUser.email), {
       id: currentUser.email,
@@ -1258,7 +1261,7 @@ export default function App() {
                       ) : (
                         <button 
                           className="btn-gold" 
-                          onClick={saveUserPredictionsToFirebase}
+                          onClick={triggerSubmitConfirm}
                         >
                           <Sparkles size={16} /> Save & Submit Predictions
                         </button>
@@ -1865,6 +1868,51 @@ export default function App() {
               )}
             </div>
           )}
+        </div>
+      )}
+
+      {/* ==========================================
+          MODAL: SUBMIT CONFIRMATION
+          ========================================== */}
+      {showSubmitConfirm && (
+        <div className="modal-overlay" onClick={() => setShowSubmitConfirm(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '440px', padding: '0', overflow: 'hidden' }}>
+            
+            {/* Header Area with Gold Accent */}
+            <div style={{ backgroundColor: 'rgba(255, 215, 0, 0.08)', borderBottom: '1px solid rgba(255, 215, 0, 0.15)', padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ backgroundColor: 'rgba(255, 215, 0, 0.15)', padding: '1rem', borderRadius: '50%', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Trophy size={36} style={{ color: 'var(--accent-gold)' }} />
+              </div>
+              <h2 style={{ color: '#fff', fontSize: '1.5rem', margin: 0, fontFamily: 'var(--font-display)', letterSpacing: '-0.02em' }}>Ready to submit?</h2>
+            </div>
+
+            {/* Body Area */}
+            <div style={{ padding: '1.75rem 2rem' }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: '1.6', textAlign: 'center', margin: 0 }}>
+                Awesome bracket! You're about to join the community leaderboard. 
+                Just remember, once you submit, your bracket will be <strong style={{ color: 'var(--text-primary)' }}>officially locked in</strong> and you won't be able to make changes.
+              </p>
+            </div>
+
+            {/* Footer / Buttons Area */}
+            <div style={{ padding: '0 2rem 2rem 2rem', display: 'flex', gap: '1rem' }}>
+              <button 
+                className="btn-secondary" 
+                onClick={() => setShowSubmitConfirm(false)} 
+                style={{ flex: 1, padding: '0.875rem', justifyContent: 'center', fontWeight: 'bold' }}
+              >
+                Keep Editing
+              </button>
+              <button 
+                className="btn-gold" 
+                onClick={executeSavePredictions} 
+                style={{ flex: 1, padding: '0.875rem', justifyContent: 'center', boxShadow: '0 4px 12px rgba(255, 215, 0, 0.3)' }}
+              >
+                Let's Go!
+              </button>
+            </div>
+            
+          </div>
         </div>
       )}
 
