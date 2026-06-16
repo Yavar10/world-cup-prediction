@@ -28,7 +28,7 @@ import { doc, getDoc, setDoc, onSnapshot, collection } from 'firebase/firestore'
 
 // Add your real Google email address here to unlock the Admin Panel!
 const ADMIN_EMAILS = [
-  "your.email@gmail.com"
+  "zuri00014@gmail.com"
 ];
 
 const GROUPS = {
