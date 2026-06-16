@@ -1807,14 +1807,10 @@ export default function App() {
                         <div className="compare-team-list">
                           {predList.map((teamId, idx) => {
                             const team = getTeamById(teamId);
-                            const offIdx = offList.indexOf(teamId);
-                            const isCorrect = offIdx === idx;
-                            
                             if (!team) return null;
                             return (
-                              <div key={teamId} className={`compare-team-inline ${isCorrect ? 'correct' : 'incorrect'}`}>
+                              <div key={teamId} className="compare-team-inline">
                                 <span>{idx + 1}. {team.flag} {team.name}</span>
-                                <span className={`status-indicator-dot ${isCorrect ? 'correct' : 'incorrect'}`}></span>
                               </div>
                             );
                           })}
@@ -1831,15 +1827,14 @@ export default function App() {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                   {viewingUserDetail.predictions.bestThirds.map(teamId => {
                     const team = getTeamById(teamId);
-                    const isCorrect = officialResults.bestThirds.includes(teamId);
                     if (!team) return null;
                     return (
                       <span 
                         key={teamId}
-                        className={`champion-predicted-badge ${isCorrect ? 'winner-correct' : ''}`}
-                        style={{ borderColor: isCorrect ? 'var(--accent-gold-border)' : 'var(--border-color)' }}
+                        className="champion-predicted-badge"
+                        style={{ borderColor: 'var(--border-color)' }}
                       >
-                        {team.flag} {team.name} {isCorrect ? '✓' : '✗'}
+                        {team.flag} {team.name}
                       </span>
                     );
                   })}
@@ -1874,14 +1869,6 @@ export default function App() {
                               <span style={{ color: 'var(--text-muted)' }}>None</span>
                             )}
                           </div>
-                          {offWinnerId && (
-                            <div className="compare-match-row-compare" style={{ borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '0.25rem', marginTop: '0.25rem' }}>
-                              <span className="compare-label-type">Result:</span>
-                              <span className={`match-result-badge ${isCorrect ? 'correct' : 'incorrect'}`}>
-                                {isCorrect ? "Correct" : "Incorrect"}
-                              </span>
-                            </div>
-                          )}
                         </div>
                       );
                     })}
