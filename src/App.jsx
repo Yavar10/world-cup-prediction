@@ -1784,10 +1784,7 @@ export default function App() {
                 <div>
                   <h3 className="compare-title">{viewingUserDetail.name}'s Predictions</h3>
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                    Total Points: <strong style={{ color: 'var(--accent-gold)' }}>{viewingUserDetail.scoreBreakdown.total}</strong> | 
-                    Groups: {viewingUserDetail.scoreBreakdown.groups} | 
-                    Wildcard: {viewingUserDetail.scoreBreakdown.bestThirds} | 
-                    Knockout: {viewingUserDetail.scoreBreakdown.knockout}
+                    Points and ranking will be revealed soon!
                   </p>
                 </div>
               </div>
