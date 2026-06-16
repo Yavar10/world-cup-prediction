@@ -580,8 +580,10 @@ export default function App() {
   }, []);
 
   // Recalculate leaderboard scores when officialResults or leaderboard entries change
-  const scoredLeaderboard = leaderboard.map(player => {
-    const scoreBreakdown = calculateScore(player.predictions, officialResults);
+  const scoredLeaderboard = leaderboard
+    .filter(player => !ADMIN_EMAILS.includes(player.email))
+    .map(player => {
+      const scoreBreakdown = calculateScore(player.predictions, officialResults);
     
     // Get predicted champion details
     const champId = player.predictions.knockout[104];
