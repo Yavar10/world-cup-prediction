@@ -626,7 +626,11 @@ export default function App() {
       isChampCorrect
     };
   }).sort((a, b) => {
-    // Sort by net community votes, then alphabetically
+    // Sort by total points, then net community votes, then alphabetically
+    if (b.scoreBreakdown.total !== a.scoreBreakdown.total) {
+      return b.scoreBreakdown.total - a.scoreBreakdown.total;
+    }
+
     const scoreA = (a.upvoters?.length || 0) - (a.downvoters?.length || 0);
     const scoreB = (b.upvoters?.length || 0) - (b.downvoters?.length || 0);
     
@@ -1118,9 +1122,24 @@ export default function App() {
                                     <span className="team-position-badge">{pos}</span>
                                   </td>
                                   <td className="table-cell">
-                                    <div className="team-info">
-                                      <TeamFlag team={team} />
-                                      <span className="team-name">{team.name}</span>
+                                    <div className="team-info" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <TeamFlag team={team} />
+                                        <span className="team-name">{team.name}</span>
+                                      </div>
+                                      {(() => {
+                                        let dotStyle = null;
+                                        const offList = officialResults.groups[groupKey] || [];
+                                        if (offList.length === 4 && hasSubmitted) {
+                                          const offIndex = offList.indexOf(teamId);
+                                          if (offIndex === index) {
+                                            dotStyle = { display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent-green)', marginLeft: '8px', flexShrink: 0 };
+                                          } else {
+                                            dotStyle = { display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent-red)', marginLeft: '8px', flexShrink: 0 };
+                                          }
+                                        }
+                                        return dotStyle ? <span style={dotStyle}></span> : null;
+                                      })()}
                                     </div>
                                   </td>
                                   <td className="table-cell center-cell">
@@ -1442,23 +1461,21 @@ export default function App() {
                 <p>Browse what everyone else is predicting. Click on a player to view their full bracket.</p>
               </div>
 
-              <div className="counter-badge" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'var(--accent-gold)', color: '#000', fontWeight: 'bold' }}>
-                <Sparkles size={16} /> 
-                Leaderboard rankings and points will be unlocked after the real-world Group Stage is completed!
-              </div>
             </div>
 
             <div className="leaderboard-table-card">
               <table className="leaderboard-table">
                 <thead>
                   <tr>
+                    <th className="leaderboard-th center" style={{ width: '60px' }}>Rank</th>
                     <th className="leaderboard-th">Player</th>
+                    <th className="leaderboard-th center"><span className="hide-on-mobile">Total </span>Pts</th>
                     <th className="leaderboard-th"><span className="hide-on-mobile">Predicted </span>Champ<span className="hide-on-mobile">ion</span></th>
                     <th className="leaderboard-th center"><span className="hide-on-mobile">Community </span>Votes</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {scoredLeaderboard.map((player) => {
+                  {scoredLeaderboard.map((player, index) => {
                     const isSelf = currentUser && player.email === currentUser.email;
                     return (
                       <tr 
@@ -1466,6 +1483,9 @@ export default function App() {
                         className={`leaderboard-tr ${isSelf ? 'current-user' : ''}`}
                         onClick={() => setViewingUserDetail(player)}
                       >
+                        <td className="leaderboard-td center">
+                          <span className="rank-cell">#{index + 1}</span>
+                        </td>
                         <td className="leaderboard-td">
                           <div className="player-cell-info">
                             <img src={player.avatar} alt={player.name} className="player-avatar" />
@@ -1480,6 +1500,9 @@ export default function App() {
                               )}
                             </div>
                           </div>
+                        </td>
+                        <td className="leaderboard-td center">
+                          <span className="total-points-badge">{player.scoreBreakdown.total}</span>
                         </td>
                         <td className="leaderboard-td">
                           {player.champTeam ? (
@@ -2121,9 +2144,21 @@ export default function App() {
                           {predList.map((teamId, idx) => {
                             const team = getTeamById(teamId);
                             if (!team) return null;
+                            
+                            let dotStyle = null;
+                            if (offList.length === 4) {
+                              const offIndex = offList.indexOf(teamId);
+                              if (offIndex === idx) {
+                                dotStyle = { display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent-green)', marginLeft: '8px', flexShrink: 0 };
+                              } else {
+                                dotStyle = { display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent-red)', marginLeft: '8px', flexShrink: 0 };
+                              }
+                            }
+
                             return (
-                              <div key={teamId} className="compare-team-inline">
+                              <div key={teamId} className="compare-team-inline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <span>{idx + 1}. <TeamFlag team={team} /> {team.name}</span>
+                                {dotStyle && <span style={dotStyle}></span>}
                               </div>
                             );
                           })}
@@ -2141,11 +2176,17 @@ export default function App() {
                   {viewingUserDetail.predictions.bestThirds.map(teamId => {
                     const team = getTeamById(teamId);
                     if (!team) return null;
+                    
+                    let borderColor = 'var(--border-color)';
+                    if (officialResults.bestThirds.length === 8) {
+                      borderColor = officialResults.bestThirds.includes(teamId) ? 'var(--accent-green)' : 'var(--accent-red)';
+                    }
+                    
                     return (
                       <span 
                         key={teamId}
                         className="champion-predicted-badge"
-                        style={{ borderColor: 'var(--border-color)' }}
+                        style={{ borderColor }}
                       >
                         <TeamFlag team={team} /> {team.name}
                       </span>
